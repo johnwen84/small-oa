@@ -30,7 +30,7 @@ const LandingPage = () => {
                 <Blockchain />
               </div>
             </Tab>
-            <Tab {...props.tab} label="Issue Document">
+            <Tab {...props.tab} label="Issue Documents">
               <div className="bx--grid bx--grid--no-gutter bx--grid--full-width">
                 <div className="bx--row landing-page__tab-content">
                   <div className="bx--col-lg-16">
@@ -39,7 +39,7 @@ const LandingPage = () => {
                 </div>
               </div>
             </Tab>
-            <Tab {...props.tab} label="Verify Document">
+            <Tab {...props.tab} label="Verify Documents">
               <div className="bx--grid bx--grid--no-gutter bx--grid--full-width">
                 <div className="bx--row landing-page__tab-content">
                   <div className="bx--col-lg-16">
@@ -51,7 +51,7 @@ const LandingPage = () => {
           </Tabs>
         </div>
       </div>
-      <div className="bx--row landing-page__r3">
+      <div className="bx--row landing-page__r3" style={{position: 'absolute', bottom: 0, width: "100%"}}>
         <span id="status" />
       </div>
     </div>

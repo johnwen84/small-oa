@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TextInput, FileUploader } from 'carbon-components-react';
+import { Form, FormItem, TextInput, FileUploader } from 'carbon-components-react';
 import { setWalletData } from '../../oa';
 
 const Blockchain = () => {
@@ -12,29 +12,40 @@ const Blockchain = () => {
   return (
     <div>
       <div className="bx--file__container">
-        <TextInput
-          id="network"
-          defaultValue="ropsten"
-          readOnly={true}
-          labelText="Network"
-        />
-        <FileUploader
-          labelTitle="Wallet"
-          labelDescription="Click to select your JSON wallet."
-          buttonKind="tertiary"
-          buttonLabel="Select Wallet"
-          name="wallet"
-          multiple={false}
-          filenameStatus="edit"
-          accept={['.json']}
-          onChange={getWallet}
-        />
-        <TextInput
-          id="password"
-          defaultValue="johnwen"
-          labelText="Wallet Password"
-          type="password"
-        />
+        <Form>
+          <FormItem>
+            <div style={{marginBottom: '2rem', marginLeft: '3rem', marginTop: '3rem'}}>
+              <TextInput
+                id="network"
+                defaultValue="ropsten"
+                readOnly={true}
+                labelText="Network"
+              />
+            </div>
+          </FormItem>
+          <FormItem>
+            <div style={{marginBottom: '2rem', marginLeft: '3rem'}}>
+              <FileUploader
+                labelDescription="Click to select your JSON wallet."
+                buttonKind="tertiary"
+                buttonLabel="Select Wallet"
+                name="wallet"
+                multiple={false}
+                filenameStatus="edit"
+                accept={['.json']}
+                onChange={getWallet}
+              />
+            </div>
+            <div style={{marginBottom: '2rem', marginLeft: '3rem'}}>
+            <TextInput
+                id="password"
+                defaultValue="johnwen"
+                labelText="Wallet Password"
+                type="password"
+              />
+            </div>
+          </FormItem>
+        </Form>
       </div>
     </div>
   );

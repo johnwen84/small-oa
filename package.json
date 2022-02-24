@@ -12,7 +12,8 @@
     "format:diff": "prettier --list-different \"**/*.{js,md,scss}\"",
     "format:staged": "prettier --write",
     "start": "react-scripts start",
-    "test": "react-scripts test"
+    "test": "react-scripts test",
+    "server": "node ./src/server.js"
   },
   "dependencies": {
     "@carbon/icons-react": "^10.22.0",

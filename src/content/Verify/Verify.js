@@ -29,7 +29,6 @@ const Verify = () => {
       <div className="bx--row repo-page__r1">
         <div className="bx--col-lg-16">
           <FileUploader
-            labelTitle="Document"
             labelDescription="Click to select document to verify."
             accept={['*.json']}
             buttonKind="tertiary"

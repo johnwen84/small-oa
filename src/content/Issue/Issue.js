@@ -25,6 +25,15 @@ function Issue() {
     2
   );
 
+  const waitCursor = (w)=>{
+    if(w) {
+      document.body.style.cursor = 'wait';
+    }
+    else {
+      document.body.style.cursor = 'default';
+    }
+  }
+
   const setStatus = (type, message) => {
     document.getElementById('status').innerHTML = message;
   };
@@ -32,6 +41,7 @@ function Issue() {
   const startRegisterDNS = async () => {
     try {
       setStatus('', 'Register DNS...');
+      waitCursor(true);
       const store = document.getElementById('store').value;
       const response = await axios.post(
         '/dns',
@@ -57,6 +67,9 @@ function Issue() {
       console.error(err);
       setStatus('', `Failed to register DNS - ${err.message}`);
     }
+    finally {
+      waitCursor(false);
+    }
   };
 
   const doIssue = async () => {
@@ -68,6 +81,18 @@ function Issue() {
       const dns = document.getElementById('dns').value;
       const store = document.getElementById('store').value;
       const documentData = document.getElementById('document').value;
+
+      if(!dns) {
+        setStatus("", "Please enter your DNS, or click the Register button to register a temporary one in the OA sandbox.");
+        return;
+      }
+
+      if(!store) {
+        setStatus("", "Please enter your document store address.");
+        return;
+      }
+
+      waitCursor(true);
       const documentRaw = buildDocument(documentData, {
         issuer,
         dns,
@@ -87,8 +112,11 @@ function Issue() {
 
       setStatus('', 'Document issued successfully.');
     } catch (err) {
-      console.error(err);
+      waitCursor(false);
       setStatus('', `Failed to issue - ${err.message}`);
+    }
+    finally {
+      document.body.style.cursor = 'default';
     }
   };
 
@@ -127,41 +155,57 @@ function Issue() {
   };
 
   return (
-    <div className="bx--grid bx--grid--full-width bx--grid--no-gutter repo-page">
-      <div className="bx--row repo-page__r1">
-        <div className="bx--col-lg-16">
-          <TextInput
-            id="issuer"
-            defaultValue="Demo Issuer"
-            labelText="Issuer Name"
-          />
-          <TextInput
-            id="store"
-            defaultValue="0xFdda6f76735BE5860d1d9Bd8C0F79a09826558C5"
-            labelText="Document Store"
-          />
-          <TextInput id="dns" labelText="DNS" />
-          <Button kind="secondary" onClick={startRegisterDNS}>
-            Register
-          </Button>
-          <TextArea
-            id="document"
-            defaultValue={sampleData}
-            labelText="Document"
-          />
-          <FileUploader
-            id="document"
-            labelDescription="Enter document or click below to select the document file."
-            accept={['*.json']}
-            buttonKind="tertiary"
-            buttonLabel="Select Document"
-            multiple={false}
-            filenameStatus="edit"
-            onChange={getDocument}
-          />
-          <Button kind="secondary" onClick={doIssue}>
-            Issue
-          </Button>
+    <div className="bx--grid bx--grid--full-width bx--grid--no-gutter">
+      <div className="bx--row">
+        <div className="bx--col">
+          <div style={{marginBottom: '2rem'}}>
+            <TextInput
+              id="issuer"
+              defaultValue="Demo Issuer"
+              labelText="Issuer Name"
+            />
+          </div>
+          <div style={{marginBottom: '2rem'}}>
+            <TextInput
+              id="store"
+              defaultValue="0xFdda6f76735BE5860d1d9Bd8C0F79a09826558C5"
+              labelText="Document Store"
+            />
+          </div>
+          <div style={{marginBottom: '2rem'}}>
+            <TextInput id="dns" labelText="DNS" />
+          </div>
+          <div style={{marginBottom: '2rem'}}>
+            <Button kind="secondary" onClick={startRegisterDNS}>
+              Register
+            </Button>
+          </div>
+        </div>
+        <div className="bx--col">
+          <div style={{marginBottom: '2rem'}}>
+            <TextArea
+              id="document"
+              defaultValue={sampleData}
+              labelText="Document"
+            />
+          </div>
+          <div style={{marginBottom: '2rem'}}>
+            <FileUploader
+              id="document"
+              labelDescription="Enter document or click below to select the document file."
+              accept={['*.json']}
+              buttonKind="tertiary"
+              buttonLabel="Select Document"
+              multiple={false}
+              filenameStatus="edit"
+              onChange={getDocument}
+            />
+          </div>
+          <div style={{marginBottom: '2rem'}}>
+            <Button kind="secondary" onClick={doIssue}>
+              Issue
+            </Button>
+          </div>
         </div>
       </div>
     </div>
