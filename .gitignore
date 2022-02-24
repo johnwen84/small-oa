@@ -1,0 +1,7 @@
+# Mac stuff
+.DS_Store
+
+# NPM dependencies
+node_modules
+
+build
