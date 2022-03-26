@@ -1,19 +1,30 @@
 import React from 'react';
 
 import { FileUploader } from 'carbon-components-react';
-import { verifyOADocument } from '../../oa';
+import axios from 'axios';
 
 const Verify = () => {
   const doVerify = async e => {
     try {
       setStatus('', 'Verifying Document...');
       const wrappedDocument = await e.target.files[0].text();
-      const verified = await verifyOADocument(wrappedDocument);
-      if (verified) {
-        setStatus('', 'Document is verified.');
-      } else {
-        setStatus('', 'Document is not verified.');
-      }
+      const response = await axios.post(
+        '/verify',
+        wrappedDocument,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const result = response.data;
+      setStatus('', result);
+      // const verified = await verifyOADocument(wrappedDocument);
+      // if (verified) {
+      //   setStatus('', 'Document is verified.');
+      // } else {
+      //   setStatus('', 'Document is not verified.');
+      // }
     } catch (err) {
       console.error(err);
       setStatus('', `Failed to verify document - ${err.message}`);

@@ -78,6 +78,7 @@ function Issue() {
       const walletPassword = document.getElementById('password').value;
 
       const issuer = document.getElementById('issuer').value;
+      const recipient = document.getElementById('recipient').value;
       const dns = document.getElementById('dns').value;
       const store = document.getElementById('store').value;
       const documentData = document.getElementById('document').value;
@@ -95,6 +96,7 @@ function Issue() {
       waitCursor(true);
       const documentRaw = buildDocument(documentData, {
         issuer,
+        recipient,
         dns,
         store,
       });
@@ -131,12 +133,18 @@ function Issue() {
       {
         name: options.issuer,
         documentStore: options.store,
+        // certificateStore: options.store,
+        // url: options.dns,
         identityProof: {
           type: 'DNS-TXT',
           location: options.dns,
         },
       },
     ];
+    documentRaw.recipient = {
+      name: options.recipient
+    }
+    console.log("documentRaw=", documentRaw);
     return documentRaw;
   };
 
@@ -163,6 +171,13 @@ function Issue() {
               id="issuer"
               defaultValue="Demo Issuer"
               labelText="Issuer Name"
+            />
+          </div>
+          <div style={{marginBottom: '2rem'}}>
+            <TextInput
+              id="recipient"
+              defaultValue="Demo Recipient"
+              labelText="Recipient Name"
             />
           </div>
           <div style={{marginBottom: '2rem'}}>

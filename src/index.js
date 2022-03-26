@@ -11,18 +11,6 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { HashRouter as Router } from 'react-router-dom';
 
-import { registerDNS } from './oa';
-
-async function getDNS() {
-  const dns = await registerDNS(
-    3,
-    '0xFdda6f76735BE5860d1d9Bd8C0F79a09826558C5'
-  );
-  console.log('dns=' + dns);
-}
-
-getDNS();
-
 ReactDOM.render(
   <Router>
     <App />

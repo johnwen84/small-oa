@@ -1,4 +1,4 @@
-import { registerDNS } from './oa.js';
+import { registerDNS, verifyOADocument } from './oa.js';
 
 import express from 'express';
 
@@ -42,6 +42,16 @@ app.post('/dns', async (req, res) => {
   const dns = await registerDNS(input.networkId, input.address);
 
   res.json(dns);
+});
+
+app.post('/verify', async (req, res) => {
+  const input = req.body;
+  const {verified, error} = await verifyOADocument(input);
+
+  if(verified) {
+    res.send("Document is verified.")
+  }
+  res.status(400).send(`Document is not verified. ${error}`);
 });
 
 app.use(express.static('./build'));

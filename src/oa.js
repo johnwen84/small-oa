@@ -8,22 +8,38 @@ import {
   wrapDocument,
   validateSchema,
   verifySignature,
-  getData,
+  getData
 } from '@govtechsg/open-attestation';
-import { connect } from '@govtechsg/document-store';
+import DocumentStoreFactory, { connect } from '@govtechsg/document-store';
+import {isValid, verify} from '@govtechsg/oa-verify';
 import { getDefaultProvider, Wallet } from 'ethers';
 import axios from 'axios';
 import fs from 'fs';
 
 try {
-  //verify();
-  //issue();
-  //registerDNS(3, "0xFdda6f76735BE5860d1d9Bd8C0F79a09826558C5");
+  // goVerify();
+  // goIssue();
+  // registerDNS(3, "0xFdda6f76735BE5860d1d9Bd8C0F79a09826558C5");
+  // deployStore();
 } catch (err) {
   console.error('Failed - ', err);
 }
 
-export async function verify() {
+async function deployStore() {
+  const ropstenProvider = getDefaultProvider('ropsten');
+  const walletStr = fs.readFileSync('../OA/wallet.json').toString();
+  const wallet = Wallet.fromEncryptedJsonSync(walletStr, 'johnwen').connect(
+    ropstenProvider
+  );
+
+  const factory = new DocumentStoreFactory(wallet);
+  const documentStore = await factory.deploy("OA_DOCUMENT_STORE");
+  await documentStore.deployTransaction.wait();
+  console.log("documentStore.address=", documentStore.address);
+  return documentStore.address;
+}
+
+export async function goVerify() {
   console.log('reading document...');
   const wrappedDocument = fs
     .readFileSync('../OA/DocStore/wrapped-documents/doc0.json')
@@ -40,7 +56,7 @@ export async function verify() {
   return data;
 }
 
-export async function issue() {
+export async function goIssue() {
   console.log('dycryping wallet...');
   const ropstenProvider = getDefaultProvider('ropsten');
   const walletStr = fs.readFileSync('../OA/wallet.json').toString();
@@ -115,7 +131,7 @@ export async function registerDNS(networkId, documentStore) {
       expiryDate: dns.expiryDate,
     };
   } catch (e) {
-    console.error(e);
+    console.error("Failed to register DNS - ", e.message);
   }
 }
 
@@ -155,12 +171,16 @@ export async function verifyOADocument(wrappedDocument) {
   validateSchema(wrappedDocument);
 
   console.log('verifying document...');
-  const verified = verifySignature(JSON.parse(wrappedDocument));
-
-  // const data = getData(wrappedDocument);
-  // return data;
-
+  const fragments = await verify(wrappedDocument);
+  console.log("fragments=", fragments);
+  const verified = isValid(fragments); 
   return verified;
+
+  //const verified = verifySignature(JSON.parse(wrappedDocument));
+  //return verified;
+
+  // //const data = getData(wrappedDocument);
+  // //return data;
 }
 
 const defaultWallet =
