@@ -21,15 +21,10 @@ const Verify = () => {
       );
       const result = response.data;
       setStatus('', result);
-      // const verified = await verifyOADocument(wrappedDocument);
-      // if (verified) {
-      //   setStatus('', 'Document is verified.');
-      // } else {
-      //   setStatus('', 'Document is not verified.');
-      // }
     } catch (err) {
-      console.error(err);
-      setStatus('', `Failed to verify document - ${err.message}`);
+      console.error("err=", err);
+      const msg = err.response.data || err.message;
+      setStatus('', `Failed to verify document - ${msg}`);
     }
   };
 

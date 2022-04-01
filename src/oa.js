@@ -181,7 +181,18 @@ export async function verifyOADocument(payload) {
   const fragments = await verify(wrappedDocument);
   console.log("fragments=", fragments);
   const verified = isValid(fragments); 
-  return verified;
+  let error;
+  if(!verified) {
+    for(const fragment of fragments) {
+      if(fragment.status=='ERROR') {
+        error = fragment.reason.message;
+      }
+    }
+  }
+  return { 
+      verified,
+      error
+  };
 
   //const verified = verifySignature(JSON.parse(wrappedDocument));
   //return verified;
