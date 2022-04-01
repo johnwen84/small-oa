@@ -49,7 +49,8 @@ app.post('/verify', async (req, res) => {
   const {verified, error} = await verifyOADocument(input);
 
   if(verified) {
-    res.send("Document is verified.")
+    res.send("Document is verified.");
+    return;
   }
   console.log("error=", error);
   res.status(400).send(`Document is not verified. ${error}`);
