@@ -51,6 +51,7 @@ app.post('/verify', async (req, res) => {
   if(verified) {
     res.send("Document is verified.")
   }
+  console.log("error=", error);
   res.status(400).send(`Document is not verified. ${error}`);
 });
 

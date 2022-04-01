@@ -181,7 +181,7 @@ export async function verifyOADocument(payload) {
   const fragments = await verify(wrappedDocument);
   console.log("fragments=", fragments);
   const verified = isValid(fragments); 
-  let error;
+  let error="";
   if(!verified) {
     for(const fragment of fragments) {
       if(fragment.status=='ERROR') {
