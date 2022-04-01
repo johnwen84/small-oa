@@ -10,8 +10,12 @@ import {
   verifySignature,
   getData
 } from '@govtechsg/open-attestation';
-import DocumentStoreFactory, { connect } from '@govtechsg/document-store';
-import {isValid, verify} from '@govtechsg/oa-verify';
+import { connect } from '@govtechsg/document-store';
+import {
+  verificationBuilder, 
+  openAttestationVerifiers, 
+  isValid 
+} from '@govtechsg/oa-verify';
 import { getDefaultProvider, Wallet } from 'ethers';
 import axios from 'axios';
 import fs from 'fs';
@@ -25,19 +29,19 @@ try {
   console.error('Failed - ', err);
 }
 
-async function deployStore() {
-  const ropstenProvider = getDefaultProvider('ropsten');
-  const walletStr = fs.readFileSync('../OA/wallet.json').toString();
-  const wallet = Wallet.fromEncryptedJsonSync(walletStr, 'johnwen').connect(
-    ropstenProvider
-  );
+// async function deployStore() {
+//   const ropstenProvider = getDefaultProvider('ropsten');
+//   const walletStr = fs.readFileSync('../OA/wallet.json').toString();
+//   const wallet = Wallet.fromEncryptedJsonSync(walletStr, 'johnwen').connect(
+//     ropstenProvider
+//   );
 
-  const factory = new DocumentStoreFactory(wallet);
-  const documentStore = await factory.deploy("OA_DOCUMENT_STORE");
-  await documentStore.deployTransaction.wait();
-  console.log("documentStore.address=", documentStore.address);
-  return documentStore.address;
-}
+//   const factory = new DocumentStoreFactory(wallet);
+//   const documentStore = await factory.deploy("OA_DOCUMENT_STORE");
+//   await documentStore.deployTransaction.wait();
+//   console.log("documentStore.address=", documentStore.address);
+//   return documentStore.address;
+// }
 
 export async function goVerify() {
   console.log('reading document...');
@@ -50,7 +54,7 @@ export async function goVerify() {
 
   console.log('verifying document...');
   const verified = verifySignature(JSON.parse(wrappedDocument));
-  //console.log(verified);
+  console.log(verified);
 
   const data = getData(wrappedDocument);
   return data;
@@ -83,7 +87,7 @@ export async function goIssue() {
 
   console.log('issuing...');
   const tx = await documentStore.issue(merkleRoot);
-  const receipt = await tx.wait();
+  await tx.wait();
 
   //const isIssued = await instance.isIssued(merkleRoot);
   //console.log(isIssued);
@@ -163,14 +167,17 @@ export async function issueOADocument(wallet, store, merkleRoot) {
 
   console.log('issuing...');
   const tx = await documentStore.issue(merkleRoot);
-  const receipt = await tx.wait();
+  await tx.wait();
 }
 
-export async function verifyOADocument(wrappedDocument) {
-  console.log('validating document...');
+export async function verifyOADocument(payload) {
+  const network = payload.network;
+  const wrappedDocument = payload.document;
+  console.log(`validating document on network ${network}...`);
   validateSchema(wrappedDocument);
 
   console.log('verifying document...');
+  const verify = verificationBuilder(openAttestationVerifiers, { network: network });
   const fragments = await verify(wrappedDocument);
   console.log("fragments=", fragments);
   const verified = isValid(fragments); 

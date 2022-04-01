@@ -7,10 +7,12 @@ const Verify = () => {
   const doVerify = async e => {
     try {
       setStatus('', 'Verifying Document...');
+      const network = document.getElementById('network').value;
       const wrappedDocument = await e.target.files[0].text();
+      const payload = `{"network":"${network}", "document":${wrappedDocument}}`;
       const response = await axios.post(
         '/verify',
-        wrappedDocument,
+        payload,
         {
           headers: {
             'Content-Type': 'application/json',
