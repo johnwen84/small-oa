@@ -184,7 +184,7 @@ export async function verifyOADocument(payload) {
   let error="";
   if(!verified) {
     for(const fragment of fragments) {
-      if(fragment.status=='ERROR') {
+      if(fragment.status=='ERROR' || fragment.status=='INVALID') {
         error = fragment.reason.message;
       }
     }
